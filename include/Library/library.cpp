@@ -20,6 +20,7 @@ Library::Library(){
 Library::~Library(){
     // Do nothing for now
     //delete this->m_object;
+    // Make sure all the threads are finished before continuing;
 }
 
 // The get instance function
@@ -31,7 +32,12 @@ Library* Library::get_instance(){
 }
 
 // Public Functions
-void Library::log_error(std::wstring input) {
+void Library::log_error(std::wstring input, bool display_message) {
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
     std::wstring basic = L"";
     std::wstring console = L"";
 
@@ -50,7 +56,12 @@ void Library::log_error(std::wstring input) {
     
 }
 
-void Library::log_warning(std::wstring input) {
+void Library::log_warning(std::wstring input, bool display_message) {
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
     std::wstring basic = L"";
     std::wstring console = L"";
 
@@ -69,7 +80,12 @@ void Library::log_warning(std::wstring input) {
     
 }
 
-void Library::log_info(std::wstring input) {
+void Library::log_info(std::wstring input, bool display_message) {
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
     std::wstring basic = L"";
     std::wstring console = L"";
 
@@ -88,7 +104,12 @@ void Library::log_info(std::wstring input) {
     
 }
 
-void Library::log_general(std::wstring input) {
+void Library::log_general(std::wstring input, bool display_message) {
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
     std::wstring basic = L"";
     std::wstring console = L"";
 
@@ -107,7 +128,12 @@ void Library::log_general(std::wstring input) {
     
 }
 
-void Library::log_pass(std::wstring input) {
+void Library::log_pass(std::wstring input, bool display_message) {
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
     std::wstring basic = L"";
     std::wstring console = L"";
 
@@ -126,7 +152,12 @@ void Library::log_pass(std::wstring input) {
     
 }
 
-void Library::log_fail(std::wstring input) {
+void Library::log_fail(std::wstring input, bool display_message) {
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
     std::wstring basic = L"";
     std::wstring console = L"";
 
@@ -145,6 +176,7 @@ void Library::log_fail(std::wstring input) {
     
 }
 
+
 void Library::set_level(Library::LEVEL value) {
     // This function will set the level of messages to display
     m_message_level = value;
@@ -157,45 +189,48 @@ void Library::set_output_type(OUTPUT_TYPE type) {
 
 // Private Functions
 void Library::log_to_file(std::wstring input, MESSAGE_TYPE value) {
-    // This function will log to a file by using the vector
-    if ((m_message_level == ALL) || (m_message_level == LEVEL0)){
-        write_log_file(input);
-    }else if(m_message_level == GENERAL_ONLY ){
-        if(value == GENERAL){
-            // write_log_file(input);
+    std::thread write = std::thread([this, input, value]{
+        // This function will log to a file by using the vector
+        if ((m_message_level == ALL) || (m_message_level == LEVEL0)){
             write_log_file(input);
-        }
-    }else if(m_message_level == INFO_ONLY){
-        if(value == INFO){
-            // write_log_file(input);
-            write_log_file(input);
-        }
-    }else if(m_message_level == WARNING_ONLY){
-        if(value == WARNING){
-            // write_log_file(input);
-            write_log_file(input);
-        }
-    }else if(m_message_level == ERROR_ONLY){
-        if(value == ERROR){
-            // write_log_file(input);
-            write_log_file(input);
-        }
-    }else if(m_message_level == LEVEL1){
-        if ((value == ERROR) || (value == WARNING) || (value == INFO)) {
-            // write_log_file(input);
-            write_log_file(input);
-        }
-    }else if(m_message_level == LEVEL2){
-        if ((value == ERROR) || (value == WARNING)) {
-            // write_log_file(input);
-            write_log_file(input);
-        }
-    }else if(m_message_level == LEVEL3){
-        if ((value == ERROR)) {
-            // write_log_file(input);
-            write_log_file(input);
-        }
-    }//end of if else
+        }else if(m_message_level == GENERAL_ONLY ){
+            if(value == GENERAL){
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }else if(m_message_level == INFO_ONLY){
+            if(value == INFO){
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }else if(m_message_level == WARNING_ONLY){
+            if(value == WARNING){
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }else if(m_message_level == ERROR_ONLY){
+            if(value == ERROR){
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }else if(m_message_level == LEVEL1){
+            if ((value == ERROR) || (value == WARNING) || (value == INFO)) {
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }else if(m_message_level == LEVEL2){
+            if ((value == ERROR) || (value == WARNING)) {
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }else if(m_message_level == LEVEL3){
+            if ((value == ERROR)) {
+                // write_log_file(input);
+                write_log_file(input);
+            }
+        }//end of if else
+    });
+    write.join();
 }
 
 void Library::log_to_console(std::wstring input, MESSAGE_TYPE value) {
@@ -211,45 +246,47 @@ void Library::log_to_console(std::wstring input, MESSAGE_TYPE value) {
     // LEVEL1 - displays info, warning, and  error messages
     // LEVEL2 - displays warning and error messages
     // LEVEL3 - displays only Error messages
-
-    if ((m_message_level == ALL) || (m_message_level == LEVEL0)){
-        std::wcout << input << std::endl;
-    }else if(m_message_level == GENERAL_ONLY ){
-        if(value == GENERAL){
-            // std::wcout << input << std::endl;
+    std::thread write = std::thread([this, input, value] {
+        if ((m_message_level == ALL) || (m_message_level == LEVEL0)){
             std::wcout << input << std::endl;
-        }
-    }else if(m_message_level == INFO_ONLY){
-        if(value == INFO){
-            // std::wcout << input << std::endl;            
-            std::wcout << input << std::endl;
-        }
-    }else if(m_message_level == WARNING_ONLY){
-        if(value == WARNING){
-            // std::wcout << input << std::endl;        
-            std::wcout << input << std::endl;
-        }
-    }else if(m_message_level == ERROR_ONLY){
-        if(value == ERROR){
-            // std::wcout << input << std::endl;            
-            std::wcout << input << std::endl;
-        }
-    }else if(m_message_level == LEVEL1){
-        if ((value == ERROR) || (value == WARNING) || (value == INFO)) {
-            // std::wcout << input << std::endl;
-            std::wcout << input << std::endl;
-        }
-    }else if(m_message_level == LEVEL2){
-        if ((value == ERROR) || (value == WARNING)) {
-            // std::wcout << input << std::endl;
-            std::wcout << input << std::endl;
-        }
-    }else if(m_message_level == LEVEL3){
-        if ((value == ERROR)) {
-            // std::wcout << input << std::endl;
-            std::wcout << input << std::endl;
-        }
-    }//end of if else
+        }else if(m_message_level == GENERAL_ONLY ){
+            if(value == GENERAL){
+                // std::wcout << input << std::endl;
+                std::wcout << input << std::endl;
+            }
+        }else if(m_message_level == INFO_ONLY){
+            if(value == INFO){
+                // std::wcout << input << std::endl;            
+                std::wcout << input << std::endl;
+            }
+        }else if(m_message_level == WARNING_ONLY){
+            if(value == WARNING){
+                // std::wcout << input << std::endl;        
+                std::wcout << input << std::endl;
+            }
+        }else if(m_message_level == ERROR_ONLY){
+            if(value == ERROR){
+                // std::wcout << input << std::endl;            
+                std::wcout << input << std::endl;
+            }
+        }else if(m_message_level == LEVEL1){
+            if ((value == ERROR) || (value == WARNING) || (value == INFO)) {
+                // std::wcout << input << std::endl;
+                std::wcout << input << std::endl;
+            }
+        }else if(m_message_level == LEVEL2){
+            if ((value == ERROR) || (value == WARNING)) {
+                // std::wcout << input << std::endl;
+                std::wcout << input << std::endl;
+            }
+        }else if(m_message_level == LEVEL3){
+            if ((value == ERROR)) {
+                // std::wcout << input << std::endl;
+                std::wcout << input << std::endl;
+            }
+        }//end of if else
+    });
+    write.join();
 }
 
 void Library::delete_file() {

@@ -1,0 +1,1 @@
+cmake.exe --build /Library/build --config Release --target all -- -j 14

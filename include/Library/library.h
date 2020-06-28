@@ -11,6 +11,7 @@
 #include <locale>
 #include <codecvt>
 #include <filesystem>
+#include <iterator>
 
 class Library {
 	public:
@@ -31,12 +32,12 @@ class Library {
 		Library* get_instance();
 
 		// Logging functions
-		void log_error(std::wstring input);
-		void log_warning(std::wstring input);
-		void log_info(std::wstring input);
-		void log_general(std::wstring input);
-		void log_pass(std::wstring input);
-		void log_fail(std::wstring input);
+		void log_error(std::wstring input, bool display_message = true);
+		void log_warning(std::wstring input, bool display_message = true);
+		void log_info(std::wstring input, bool display_message = true);
+		void log_general(std::wstring input, bool display_message = true);
+		void log_pass(std::wstring input, bool display_message = true);
+		void log_fail(std::wstring input, bool display_message = true);
 		
 		// Set logging level
 		void set_level(LEVEL value);
@@ -73,5 +74,6 @@ class Library {
 		static LEVEL m_message_level;
 		static std::string m_filename;
 		static OUTPUT_TYPE m_output_type;
+		std::vector<std::thread> m_threads;
 
 };
