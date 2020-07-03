@@ -12,6 +12,7 @@
 #include <codecvt>
 #include <filesystem>
 #include <iterator>
+#include <cmath>
 
 class Library {
 	public:
@@ -38,6 +39,19 @@ class Library {
 		void log_general(std::wstring input, bool display_message = true);
 		void log_pass(std::wstring input, bool display_message = true);
 		void log_fail(std::wstring input, bool display_message = true);
+		void log_line(std::wstring input = L"=", int counter = 40, bool display_message = true);
+		void log_process(std::wstring process_name, int percentage = 0, bool display_message = true);
+		void log_start_process(bool display_message = true);
+		void log_end_process(bool display_message = true);
+
+		// string only logging functions
+		void log_error(std::string input, bool display_message = true);
+		void log_warning(std::string input, bool display_message = true);
+		void log_info(std::string input, bool display_message = true);
+		void log_general(std::string input, bool display_message = true);
+		void log_pass(std::string input, bool display_message = true);
+		void log_fail(std::string input, bool display_message = true);
+		void log_process(std::string process_name, int percentage = 0, bool display_message = true);
 		
 		// Set logging level
 		void set_level(LEVEL value);
@@ -57,6 +71,13 @@ class Library {
 		// Private Functions
 		void log_to_file(std::wstring input, MESSAGE_TYPE type = GENERAL);
 		void log_to_console(std::wstring input, MESSAGE_TYPE type = GENERAL);
+
+		// Normal String Functions
+		void log_to_file(std::string input, MESSAGE_TYPE type = GENERAL);
+		void log_to_console(std::string input, MESSAGE_TYPE type = GENERAL);
+
+		// create a progress bar
+		std::wstring get_progress(int count);
 
 		// A thread use checking the information to write to the file
 		void clear_vector();

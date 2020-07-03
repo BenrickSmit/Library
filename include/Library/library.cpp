@@ -46,12 +46,12 @@ void Library::log_error(std::wstring input, bool display_message) {
 
     // Output the text created
     if (m_output_type == FILE_ONLY){
-        log_to_file(basic, ERROR);
+        log_to_file(basic + L"\n", ERROR);
     }else if(m_output_type == CONSOLE_ONLY){
-        log_to_console(console, ERROR);
+        log_to_console(console + L"\n", ERROR);
     }else{
-        log_to_file(basic, ERROR);
-        log_to_console(console, ERROR);
+        log_to_file(basic + L"\n", ERROR);
+        log_to_console(console + L"\n", ERROR);
     }// end of if else
     
 }
@@ -70,14 +70,13 @@ void Library::log_warning(std::wstring input, bool display_message) {
 
     // Output the text created
     if (m_output_type == FILE_ONLY){
-        log_to_file(basic, WARNING);
+        log_to_file(basic + L"\n", ERROR);
     }else if(m_output_type == CONSOLE_ONLY){
-        log_to_console(console, WARNING);
+        log_to_console(console + L"\n", ERROR);
     }else{
-        log_to_file(basic, WARNING);
-        log_to_console(console, WARNING);
+        log_to_file(basic + L"\n", ERROR);
+        log_to_console(console + L"\n", ERROR);
     }// end of if else
-    
 }
 
 void Library::log_info(std::wstring input, bool display_message) {
@@ -94,12 +93,12 @@ void Library::log_info(std::wstring input, bool display_message) {
 
     // Output the text created
     if (m_output_type == FILE_ONLY){
-        log_to_file(basic, INFO);
+        log_to_file(basic + L"\n", ERROR);
     }else if(m_output_type == CONSOLE_ONLY){
-        log_to_console(console, INFO);
+        log_to_console(console + L"\n", ERROR);
     }else{
-        log_to_file(basic, INFO);
-        log_to_console(console, INFO);
+        log_to_file(basic + L"\n", ERROR);
+        log_to_console(console + L"\n", ERROR);
     }// end of if else
     
 }
@@ -118,12 +117,12 @@ void Library::log_general(std::wstring input, bool display_message) {
 
     // Output the text created
     if (m_output_type == FILE_ONLY){
-        log_to_file(basic, GENERAL);
+        log_to_file(basic + L"\n", ERROR);
     }else if(m_output_type == CONSOLE_ONLY){
-        log_to_console(console, GENERAL);
+        log_to_console(console + L"\n", ERROR);
     }else{
-        log_to_file(basic, GENERAL);
-        log_to_console(console, GENERAL);
+        log_to_file(basic + L"\n", ERROR);
+        log_to_console(console + L"\n", ERROR);
     }// end of if else
     
 }
@@ -142,12 +141,12 @@ void Library::log_pass(std::wstring input, bool display_message) {
 
     // Output the text created
     if (m_output_type == FILE_ONLY){
-        log_to_file(basic, INFO);
+        log_to_file(basic + L"\n", ERROR);
     }else if(m_output_type == CONSOLE_ONLY){
-        log_to_console(console, INFO);
+        log_to_console(console + L"\n", ERROR);
     }else{
-        log_to_file(basic, INFO);
-        log_to_console(console, INFO);
+        log_to_file(basic + L"\n", ERROR);
+        log_to_console(console + L"\n", ERROR);
     }// end of if else
     
 }
@@ -166,15 +165,143 @@ void Library::log_fail(std::wstring input, bool display_message) {
 
     // Output the text created
     if (m_output_type == FILE_ONLY){
-        log_to_file(basic, INFO);
+        log_to_file(basic + L"\n", ERROR);
     }else if(m_output_type == CONSOLE_ONLY){
-        log_to_console(console, INFO);
+        log_to_console(console + L"\n", ERROR);
     }else{
-        log_to_file(basic, INFO);
-        log_to_console(console, INFO);
+        log_to_file(basic + L"\n", ERROR);
+        log_to_console(console + L"\n", ERROR);
     }// end of if else
     
 }
+
+void Library::log_line(std::wstring input, int counter, bool display_message){
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
+    // Create a line to log
+    std::wstring to_log = L"";
+
+    for (auto count = 0; count < counter; count++){
+        to_log += input;
+    }// end of for
+
+    // Output the text created
+    if (m_output_type == FILE_ONLY){
+        log_to_file(to_log + L"\n", ERROR);
+    }else if(m_output_type == CONSOLE_ONLY){
+        log_to_console(to_log + L"\n", ERROR);
+    }else{
+        log_to_file(to_log + L"\n", ERROR);
+        log_to_console(to_log + L"\n", ERROR);
+    }// end of if else
+}
+
+void Library::log_start_process(bool display_message){
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
+    // Output the text created
+    if (m_output_type == FILE_ONLY){
+        log_to_file(L"\n", ERROR);
+    }else if(m_output_type == CONSOLE_ONLY){
+        log_to_console(L"\n", ERROR);
+    }else{
+        log_to_file(L"\n", ERROR);
+        log_to_console(L"\n", ERROR);
+    }// end of if else
+}
+
+void Library::log_process(std::wstring process_name, int counter, bool display_message){
+    // This function will use the carriage return to create a string and display it on the console, in the 
+    // same way that the terminal would on *nix systems
+    
+    //Ensure the function doesn't log if it's not necessary to
+    if(!display_message){
+        return;
+    }//end of if
+
+    // Set the counter to a value between 0 and 100;
+    if (counter > 100){
+        counter = 100;
+    }else {
+        counter = counter;
+    }
+
+    // Convert the string to a 10 character name
+    std::wstring name = process_name.substr(0, 17) + L"...";
+    std::wstring progress_bar = get_progress(counter);
+
+    // Create the final string
+    std::string number = std::to_string(counter);
+    number = number.substr(0, number.find('.'));
+    std::wstring final_string = name + L"\t" + progress_bar + L" " + std::wstring(number.begin(), number.end()) + L"%";
+
+    // These rules are slighlty special
+    // Output to the console, if the message should be displayed, and  the message type is CONSOLE
+    // Output only to file if the counter == 100
+    if ((((m_output_type == FILE_ONLY) || (m_output_type == BOTH)))){
+        if(counter == 100){
+            log_to_file(final_string + L"\n", INFO);
+        }// end of if
+    }
+    if(((m_output_type == CONSOLE_ONLY) || (m_output_type == BOTH))){
+        log_to_console(L"\r"+ final_string, INFO);
+    } // end of if
+}
+
+void Library::log_end_process(bool display_message){
+    log_start_process(display_message);
+}
+
+
+
+void Library::log_error(std::string input, bool display_message) {
+    std::wstring w_input = std::wstring(input.begin(), input.end());
+    log_error(w_input, display_message);
+}
+
+
+void Library::log_warning(std::string input, bool display_message) {
+    std::wstring w_input = std::wstring(input.begin(), input.end());
+    log_warning(w_input, display_message);
+}
+
+
+void Library::log_info(std::string input, bool display_message) {
+    std::wstring w_input = std::wstring(input.begin(), input.end());
+    log_info(w_input, display_message);
+}
+
+
+void Library::log_general(std::string input, bool display_message) {
+    std::wstring w_input = std::wstring(input.begin(), input.end());
+    log_general(w_input, display_message);
+}
+
+
+void Library::log_pass(std::string input, bool display_message) {
+    std::wstring w_input = std::wstring(input.begin(), input.end());
+    log_pass(w_input, display_message);
+}
+
+
+void Library::log_fail(std::string input, bool display_message) {
+    std::wstring w_input = std::wstring(input.begin(), input.end());
+    log_fail(w_input, display_message);
+}
+
+
+void Library::log_process(std::string process_name, int percentage, bool display_message) {
+    std::wstring w_input = std::wstring(process_name.begin(), process_name.end());
+    log_process(w_input, percentage, display_message);    
+}
+
+
 
 
 void Library::set_level(Library::LEVEL value) {
@@ -248,45 +375,55 @@ void Library::log_to_console(std::wstring input, MESSAGE_TYPE value) {
     // LEVEL3 - displays only Error messages
     std::thread write = std::thread([this, input, value] {
         if ((m_message_level == ALL) || (m_message_level == LEVEL0)){
-            std::wcout << input << std::endl;
+            std::wcout << input;
         }else if(m_message_level == GENERAL_ONLY ){
             if(value == GENERAL){
                 // std::wcout << input << std::endl;
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }else if(m_message_level == INFO_ONLY){
             if(value == INFO){
                 // std::wcout << input << std::endl;            
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }else if(m_message_level == WARNING_ONLY){
             if(value == WARNING){
                 // std::wcout << input << std::endl;        
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }else if(m_message_level == ERROR_ONLY){
             if(value == ERROR){
                 // std::wcout << input << std::endl;            
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }else if(m_message_level == LEVEL1){
             if ((value == ERROR) || (value == WARNING) || (value == INFO)) {
                 // std::wcout << input << std::endl;
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }else if(m_message_level == LEVEL2){
             if ((value == ERROR) || (value == WARNING)) {
                 // std::wcout << input << std::endl;
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }else if(m_message_level == LEVEL3){
             if ((value == ERROR)) {
                 // std::wcout << input << std::endl;
-                std::wcout << input << std::endl;
+                std::wcout << input;
             }
         }//end of if else
     });
     write.join();
+}
+
+void Library::log_to_file(std::string input, MESSAGE_TYPE value) {
+    std::wstring new_input = std::wstring(input.begin(), input.end());
+    log_to_file(new_input, value);
+}
+
+void Library::log_to_console(std::string input, MESSAGE_TYPE value) {
+    std::wstring new_input = std::wstring(input.begin(), input.end());
+    log_to_console(new_input, value);
 }
 
 void Library::delete_file() {
@@ -332,8 +469,42 @@ void Library::write_log_file(std::wstring input) {
         std::string output_message = "Error opening file: \"" + m_filename + "\"";
         perror(output_message.c_str()); 
     }
-    output_file << input << std::endl;
+    output_file << input;
     output_file.close();
 }
 
 
+
+std::wstring Library::get_progress(int count) {
+    // This function takes in a value, and converts it to one out of 100. Then creates a progress bar to append
+    // which it then returns
+    std::wstring to_return = L"";
+    std::wstring whitespace = L"____________________"; // 20 Whitespaces
+
+    // Find convert the counter
+    if (count < 100){
+        count = count;
+    }else if(count < 0){
+        count = 0;
+    }else {
+        count = 100;
+    }// end of if
+
+    // Get the number of characters to add
+    std::wstring character = L"=";
+
+    // Quick and Dirty method
+    int number_of_chars = (count == 0 ? 0:std::ceil(count/5.0));
+
+    for (int i = 0; i < number_of_chars; i++) {
+        to_return += character;
+    }// end of for
+
+    // Remove the parts from the empty string that aren't necessary
+    std::wstring composite = to_return + whitespace.substr(0, (20 - to_return.length()));
+
+    // Reset the to_return string for the ending string
+    to_return = composite;
+
+    return (L"[" + to_return + L"] ");
+}
